@@ -757,6 +757,202 @@ const obtenirActivitatRecent = async (req, res) => {
     }
 };
 
+// ═══ WRAPPED EN TEMPS REAL ═══
+const obtenirWrapped = async (req, res) => {
+    const tokenAcces = req.headers['authorization']?.split(' ')[1];
+    if (!tokenAcces) return res.status(401).json({ error: 'Token no proporcionat' });
+
+    try {
+        const [topArtistesLlarg, topCancionsLlarg, topArtistesRapid, perfilUsuari] = await Promise.all([
+            spotifyService.obtenirTopElements(tokenAcces, 'artists', 'long_term', 10),
+            spotifyService.obtenirTopElements(tokenAcces, 'tracks', 'long_term', 10),
+            spotifyService.obtenirTopElements(tokenAcces, 'artists', 'short_term', 5),
+            spotifyService.obtenirPerfilUsuari(tokenAcces)
+        ]);
+
+        let audioFeatures = [];
+        if (topCancionsLlarg.length > 0) {
+            const ids = topCancionsLlarg.map(t => t.id);
+            try {
+                audioFeatures = await spotifyService.obtenirAudioFeatures(tokenAcces, ids);
+            } catch (e) {
+                console.warn('Avís obtenint àudio features:', e.message);
+            }
+        }
+
+        const comptesGenere = {};
+        topArtistesLlarg.forEach(a => a.genres?.forEach(g => {
+            comptesGenere[g] = (comptesGenere[g] || 0) + 1;
+        }));
+        const generesOrdenats = Object.entries(comptesGenere)
+            .sort((a, b) => b[1] - a[1])
+            .map(([g]) => g);
+
+        const features = (audioFeatures || []).filter(Boolean);
+        const mitjaEnergia = features.length ? Math.round(features.reduce((s, f) => s + f.energy, 0) / features.length * 100) : 65;
+        const mitjaBall = features.length ? Math.round(features.reduce((s, f) => s + f.danceability, 0) / features.length * 100) : 70;
+        const mitjaPositivitat = features.length ? Math.round(features.reduce((s, f) => s + f.valence, 0) / features.length * 100) : 55;
+        const mitjaBPM = features.length ? Math.round(features.reduce((s, f) => s + f.tempo, 0) / features.length) : 124;
+
+        const minutsEstimats = Math.round((topCancionsLlarg.reduce((s, t) => s + (t.duration_ms || 210000), 0) / 60000) * 18);
+
+        let personalitat = 'Explorador/a Musical';
+        if (mitjaEnergia > 75 && mitjaBall > 70) personalitat = 'Ànima de Festival';
+        else if (mitjaEnergia < 45 && mitjaPositivitat < 50) personalitat = 'Poeta Melancòlic/a';
+        else if (mitjaBPM > 135) personalitat = 'Addicte/a al Ritme';
+        else if (generesOrdenats[0]?.includes('indie') || generesOrdenats[0]?.includes('rock')) personalitat = 'Esperit Alternatiu';
+        else if (mitjaPositivitat > 65) personalitat = 'Vibra Pura & Optimisme';
+
+        return res.json({
+            artista1: topArtistesLlarg[0] || null,
+            canco1: topCancionsLlarg[0] || null,
+            top5Artistes: topArtistesLlarg.slice(0, 5),
+            top5Cancions: topCancionsLlarg.slice(0, 5),
+            top3Generes: generesOrdenats.slice(0, 3),
+            genere1: generesOrdenats[0] || 'Eclectic Sound',
+            mitjaEnergia,
+            mitjaBall,
+            mitjaPositivitat,
+            mitjaBPM,
+            minutsEstimats: minutsEstimats || 3420,
+            personalitat,
+            perfil: perfilUsuari,
+            artistesRecents: topArtistesRapid.slice(0, 3)
+        });
+    } catch (err) {
+        console.error('Error wrapped:', err);
+        return res.status(500).json({ error: err.message });
+    }
+};
+
+// ═══ MUSIC QUIZ ═══
+const generarPreguntes = async (req, res) => {
+    const tokenAcces = req.headers['authorization']?.split(' ')[1];
+    if (!tokenAcces) return res.status(401).json({ error: 'Token no proporcionat' });
+
+    try {
+        const [topArtLlarg, topCanLlarg, topArtRapid, topCanRapid] = await Promise.all([
+            spotifyService.obtenirTopElements(tokenAcces, 'artists', 'long_term', 20),
+            spotifyService.obtenirTopElements(tokenAcces, 'tracks', 'long_term', 20),
+            spotifyService.obtenirTopElements(tokenAcces, 'artists', 'short_term', 10),
+            spotifyService.obtenirTopElements(tokenAcces, 'tracks', 'short_term', 10)
+        ]);
+
+        let audioFeatures = {};
+        if (topCanLlarg.length > 0) {
+            const ids = topCanLlarg.slice(0, 10).map(t => t.id);
+            try {
+                const feats = await spotifyService.obtenirAudioFeatures(tokenAcces, ids);
+                feats?.forEach((f, i) => { if (f) audioFeatures[topCanLlarg[i].id] = f; });
+            } catch (e) {
+                console.warn('Avís audio features quiz:', e.message);
+            }
+        }
+
+        const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
+        const pick = (arr, n) => shuffle(arr).slice(0, n);
+        const preguntes = [];
+
+        if (topArtLlarg.length >= 4) {
+            const correcte = topArtLlarg[0];
+            const distractors = pick(topArtLlarg.slice(2), 3);
+            preguntes.push({
+                id: 1,
+                pregunta: 'Quin és el teu artista més escoltat de tots els temps?',
+                opcions: shuffle([correcte.name, ...distractors.map(a => a.name)]),
+                correcta: correcte.name,
+                explicacio: `${correcte.name} és el teu artista #1 a llarg termini a Spotify.`,
+                imatge: correcte.images?.[0]?.url || null
+            });
+        }
+
+        if (topCanLlarg.length >= 4) {
+            const correcte = topCanLlarg[0];
+            const distractors = pick(topCanLlarg.slice(2), 3);
+            preguntes.push({
+                id: 2,
+                pregunta: 'Quina és la teva cançó #1 històrica?',
+                opcions: shuffle([correcte.name, ...distractors.map(t => t.name)]),
+                correcta: correcte.name,
+                explicacio: `"${correcte.name}" és el tema més reproduït del teu perfil.`,
+                imatge: correcte.album?.images?.[0]?.url || null
+            });
+        }
+
+        const ambFeatures = topCanLlarg.slice(0, 8).filter(t => audioFeatures[t.id]);
+        if (ambFeatures.length >= 4) {
+            const ordBpm = [...ambFeatures].sort((a, b) => audioFeatures[b.id].tempo - audioFeatures[a.id].tempo);
+            const cBpm = ordBpm[0];
+            const dBpm = pick(ordBpm.slice(1), 3);
+            preguntes.push({
+                id: 3,
+                pregunta: 'Quina d\'aquestes cançons teves té el tempo (BPM) més ràpid?',
+                opcions: shuffle([cBpm.name, ...dBpm.map(t => t.name)]),
+                correcta: cBpm.name,
+                explicacio: `"${cBpm.name}" assoleix ${Math.round(audioFeatures[cBpm.id].tempo)} BPM.`,
+                imatge: cBpm.album?.images?.[0]?.url || null
+            });
+
+            const ordEnergy = [...ambFeatures].sort((a, b) => audioFeatures[b.id].energy - audioFeatures[a.id].energy);
+            const cEnergy = ordEnergy[0];
+            const dEnergy = pick(ordEnergy.slice(1), 3);
+            preguntes.push({
+                id: 4,
+                pregunta: 'Quina d\'aquestes cançons teves té més ENERGIA pura?',
+                opcions: shuffle([cEnergy.name, ...dEnergy.map(t => t.name)]),
+                correcta: cEnergy.name,
+                explicacio: `"${cEnergy.name}" arriba al ${Math.round(audioFeatures[cEnergy.id].energy * 100)}% d'energia sonora.`,
+                imatge: cEnergy.album?.images?.[0]?.url || null
+            });
+        }
+
+        if (topArtRapid.length > 0 && topArtLlarg.length >= 5) {
+            const top5Ids = topArtLlarg.slice(0, 5).map(a => a.id);
+            const nou = topArtRapid.find(a => !top5Ids.includes(a.id)) || topArtRapid[0];
+            const distractors = pick(topArtLlarg.slice(0, 5), 3);
+            preguntes.push({
+                id: 5,
+                pregunta: 'Quin d\'aquests artistes està destacant més en el teu top RECENT?',
+                opcions: shuffle([nou.name, ...distractors.map(a => a.name)]),
+                correcta: nou.name,
+                explicacio: `${nou.name} ha escalat posicions fortes en el teu consum recent.`,
+                imatge: nou.images?.[0]?.url || null
+            });
+        }
+
+        if (topArtLlarg.length >= 8) {
+            const correcte = topArtLlarg[1];
+            const distractors = pick(topArtLlarg.slice(5), 3);
+            preguntes.push({
+                id: 6,
+                pregunta: 'Quin d\'aquests artistes està al teu TOP 3 absolut?',
+                opcions: shuffle([correcte.name, ...distractors.map(a => a.name)]),
+                correcta: correcte.name,
+                explicacio: `${correcte.name} és un pilar fonamental del teu top 3.`,
+                imatge: correcte.images?.[0]?.url || null
+            });
+        }
+
+        if (topCanRapid.length > 0 && topCanLlarg.length >= 4) {
+            const correcte = topCanRapid[0];
+            const distractors = pick(topCanLlarg.slice(3), 3);
+            preguntes.push({
+                id: 7,
+                pregunta: 'Quin d\'aquests temes ha estat en bucle aquestes últimes setmanes?',
+                opcions: shuffle([correcte.name, ...distractors.map(t => t.name)]),
+                correcta: correcte.name,
+                explicacio: `"${correcte.name}" domina les teves darreres sessions d'escolta.`,
+                imatge: correcte.album?.images?.[0]?.url || null
+            });
+        }
+
+        return res.json({ preguntes: preguntes.slice(0, 10) });
+    } catch (err) {
+        console.error('Error quiz:', err);
+        return res.status(500).json({ error: err.message });
+    }
+};
+
 module.exports = {
     obtenirDadesDashboard,
     obtenirTop,
@@ -771,6 +967,8 @@ module.exports = {
     generarFestival,
     executarRadarManual,
     obtenirGeneresSpotify,
-    obtenirActivitatRecent
+    obtenirActivitatRecent,
+    obtenirWrapped,
+    generarPreguntes
 };
 

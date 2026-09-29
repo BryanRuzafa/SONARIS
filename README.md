@@ -129,6 +129,29 @@ Assistent intel·ligent musical:
 - Coneix els artistes favorits, gèneres i hàbits d'escolta de l'usuari.
 - Respon preguntes sobre música, fa recomanacions personalitzades, analitza cançons i crea llistes.
 
+### 🎯 10. Wrapped en Temps Real (`/wrapped`)
+El teu resum musical disponible els 365 dies de l'any:
+
+- Experiència immersiva en format **Stories interactives** amb autoplay, pausa i control tàctil.
+- Mètriques en viu: Top artista #1, Top 5 artistes, cançó insígnia, gènere rei, hores/minuts estimats d'escolta.
+- **Audioprint**: diagnòstic de BPM mitjà, índex de ballabilitat, intensitat d'energia i valència emocional.
+- **Arquetip de Personalitat Sonora**: anàlisi de perfil acústic generat per sintetitzar la teva essència musical.
+
+### 🎮 11. Music Quiz Personalitzat (`/quiz`)
+Joc interactiu de preguntes generades a mida:
+
+- 10 preguntes generades automàticament des del teu consum real a Spotify.
+- Temporitzador de 15 segons amb bonificació per rapidesa.
+- Comparatives acústiques: quina cançó té més BPM, quin tema té més energia, cançons noves vs clàssics del teu top.
+- Puntuació en viu i diagnòstic final d'oïda musical.
+
+### 🌐 12. Suport Multiidioma (i18n)
+Internacionalització completa amb selector dinàmic:
+
+- Idiomes suportats: **Català (CA)**, **Castellà (ES)** i **Anglès (EN)**.
+- Selector de llengua accessible des de la Navbar de la Home, el Login i el Dashboard.
+- Persistència automàtica de la preferència de l'usuari a `localStorage`.
+
 ---
 
 ## 🏗️ Arquitectura

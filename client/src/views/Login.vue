@@ -8,6 +8,11 @@
       <div class="grid-overlay"></div>
     </div>
 
+    <!-- Selector de llengua superior -->
+    <div class="absolute top-6 right-8 z-30">
+      <LanguageSelector />
+    </div>
+
     <!-- ═══ LAYOUT SPLIT ═══ -->
     <div class="relative z-10 w-full max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-12 py-16">
 
@@ -102,6 +107,8 @@
 </template>
 
 <script setup>
+import LanguageSelector from '../components/LanguageSelector.vue'
+
 const iniciarSessioSpotify = () => {
   window.location.href = 'http://localhost:3000/api/auth/login'
 }

@@ -14,21 +14,45 @@
       </div>
 
       <!-- Navegació principal -->
-      <div class="space-y-1 flex-1">
+      <div class="space-y-1 flex-1 overflow-y-auto custom-scrollbar pr-1">
         <button
           v-for="seccio in seccionsNav"
           :key="seccio.id"
           @click="seccioActiva = seccio.id"
           :class="[
-            'w-full flex items-center gap-4 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200',
+            'w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 text-left',
             seccioActiva === seccio.id
-              ? 'bg-[#282828] text-white font-bold'
+              ? 'bg-[#282828] text-white font-bold shadow-sm'
               : 'text-[#B3B3B3] hover:text-white hover:bg-[#181818]'
           ]"
         >
           <span :class="seccioActiva === seccio.id ? 'text-[#1ED760]' : 'text-[#B3B3B3]' " v-html="seccio.icona"></span>
           {{ seccio.etiqueta }}
         </button>
+
+        <div class="pt-4 pb-2 px-2 text-[10px] font-black uppercase tracking-wider text-white/30">
+          Experiències Especials
+        </div>
+
+        <!-- Wrapped Link -->
+        <router-link
+          to="/wrapped"
+          class="w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 text-white bg-gradient-to-r from-purple-900/30 to-indigo-900/30 border border-purple-500/20 hover:border-purple-500/50 hover:bg-purple-900/40 group"
+        >
+          <span class="text-base group-hover:scale-110 transition-transform">✨</span>
+          <span class="flex-1">Wrapped Live</span>
+          <span class="text-[9px] bg-purple-500 text-white font-black px-1.5 py-0.5 rounded uppercase">Nou</span>
+        </router-link>
+
+        <!-- Quiz Link -->
+        <router-link
+          to="/quiz"
+          class="w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 text-white bg-gradient-to-r from-emerald-900/30 to-teal-900/30 border border-[#1ED760]/20 hover:border-[#1ED760]/50 hover:bg-emerald-900/40 group mt-1"
+        >
+          <span class="text-base group-hover:scale-110 transition-transform">🎮</span>
+          <span class="flex-1">Music Quiz</span>
+          <span class="text-[9px] bg-[#1ED760] text-black font-black px-1.5 py-0.5 rounded uppercase">Joc</span>
+        </router-link>
       </div>
 
       <!-- Perfil i tancament de sessió -->
@@ -80,13 +104,15 @@
           </button>
         </div>
 
-        <!-- Filtre de termini temporal (només visible al dashboard) -->
-        <div v-if="seccioActiva === 'dashboard'" class="flex gap-2 p-1 bg-[#181818] rounded-full border border-white/5">
-          <button
-            v-for="termini in terminis"
-            :key="termini.valor"
-            @click="canviarTermini(termini.valor)"
-            :class="[
+        <!-- Filtre de termini temporal i Selector Idioma -->
+        <div class="flex items-center gap-3">
+          <LanguageSelector />
+          <div v-if="seccioActiva === 'dashboard'" class="flex gap-2 p-1 bg-[#181818] rounded-full border border-white/5">
+            <button
+              v-for="termini in terminis"
+              :key="termini.valor"
+              @click="canviarTermini(termini.valor)"
+              :class="[
               'px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200',
               terminiActual === termini.valor
                 ? 'bg-[#282828] text-white shadow-sm'
@@ -95,6 +121,7 @@
           >
             {{ termini.etiqueta }}
           </button>
+          </div>
         </div>
       </header>
 
@@ -846,6 +873,7 @@
 import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+import LanguageSelector from '../components/LanguageSelector.vue';
 import { Radar, Line, Bar } from 'vue-chartjs';
 import { Chart as ChartJS, RadialLinearScale, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Filler, Tooltip, Legend } from 'chart.js';
 import { io } from 'socket.io-client';

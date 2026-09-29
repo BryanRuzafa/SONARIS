@@ -39,4 +39,11 @@ const contextController = require('../controllers/contextController');
 router.post('/diari', contextController.processarDiariEmocional);
 router.post('/soundtrack', contextController.generarSoundtrack);
 
+// Ruta per al Wrapped en Temps Real
+router.get('/wrapped', dashboardController.obtenirWrapped);
+
+// Ruta per al Music Quiz
+router.get('/quiz/preguntes', dashboardController.generarPreguntes);
+
 module.exports = router;
+

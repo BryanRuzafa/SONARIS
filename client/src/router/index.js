@@ -22,6 +22,18 @@ const routes = [
         name: 'Dashboard',
         component: () => import('../views/Dashboard.vue'),
         meta: { requereixAuth: true }
+    },
+    {
+        path: '/wrapped',
+        name: 'Wrapped',
+        component: () => import('../views/Wrapped.vue'),
+        meta: { requereixAuth: true }
+    },
+    {
+        path: '/quiz',
+        name: 'Quiz',
+        component: () => import('../views/Quiz.vue'),
+        meta: { requereixAuth: true }
     }
 ]
 

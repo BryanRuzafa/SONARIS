@@ -21,9 +21,12 @@
         </div>
         <span class="font-bold text-lg tracking-widest text-white">SONARIS</span>
       </div>
-      <router-link to="/login" class="px-5 py-2 text-sm font-bold text-[#121212] bg-[#1ED760] rounded-full hover:bg-[#1fdf64] transition-all duration-200 hover:scale-105">
-        Accedir
-      </router-link>
+      <div class="flex items-center gap-4">
+        <LanguageSelector />
+        <router-link to="/login" class="px-5 py-2 text-sm font-bold text-[#121212] bg-[#1ED760] rounded-full hover:bg-[#1fdf64] transition-all duration-200 hover:scale-105">
+          {{ $t('nav.access') }}
+        </router-link>
+      </div>
     </nav>
 
     <!-- ═══════════════ HERO ═══════════════ -->
@@ -229,6 +232,40 @@
           </div>
         </div>
 
+        <!-- Card 8 - Wrapped en Temps Real -->
+        <div class="reveal feature-card md:col-span-6 rounded-2xl bg-[#111] border border-white/5 p-8 overflow-hidden relative group">
+          <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="relative z-10">
+            <div class="w-14 h-14 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl flex items-center justify-center mb-6">
+              <span class="text-2xl">✨</span>
+            </div>
+            <h3 class="text-xl font-black text-white mb-3 tracking-tight">Wrapped en Temps Real</h3>
+            <p class="text-[#999] text-sm leading-relaxed">No esperis al desembre. Visualitza el teu resum musical complet en qualsevol època de l'any amb històries animades interactives.</p>
+            <div class="mt-5 flex flex-wrap gap-2">
+              <span class="feature-tag">12 Stories</span>
+              <span class="feature-tag">Top Artistes</span>
+              <span class="feature-tag">ADN Acústic</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 9 - Music Quiz -->
+        <div class="reveal feature-card md:col-span-6 rounded-2xl bg-[#111] border border-white/5 p-8 overflow-hidden relative group">
+          <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="relative z-10">
+            <div class="w-14 h-14 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl flex items-center justify-center mb-6">
+              <span class="text-2xl">🎮</span>
+            </div>
+            <h3 class="text-xl font-black text-white mb-3 tracking-tight">Music Quiz Personalitzat</h3>
+            <p class="text-[#999] text-sm leading-relaxed">Posa a prova els teus coneixements amb un test dinàmic amb temporitzador de 15 segons basat estrictament en les teves reproduccions reals.</p>
+            <div class="mt-5 flex flex-wrap gap-2">
+              <span class="feature-tag-emerald">Temps Real</span>
+              <span class="feature-tag-emerald">Puntuacions</span>
+              <span class="feature-tag-emerald">100% Teu</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -290,6 +327,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import LanguageSelector from '../components/LanguageSelector.vue'
 
 const bars = [40, 70, 55, 90, 65, 80, 45, 75, 60, 85, 50, 95]
 
