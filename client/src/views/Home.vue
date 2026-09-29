@@ -266,6 +266,23 @@
           </div>
         </div>
 
+        <!-- Card 10 - ADN Acústic & Mood -->
+        <div class="reveal feature-card md:col-span-6 rounded-2xl bg-[#111] border border-white/5 p-8 overflow-hidden relative group">
+          <div class="absolute inset-0 bg-gradient-to-br from-rose-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="relative z-10">
+            <div class="w-14 h-14 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center justify-center mb-6">
+              <span class="text-2xl">🧬</span>
+            </div>
+            <h3 class="text-xl font-black text-white mb-3 tracking-tight">ADN Acústic & Vibes</h3>
+            <p class="text-[#999] text-sm leading-relaxed">Descobreix la teva empremta sonora a través de gràfics radar: valència emocional, nivell d'acústica, presència d'energia i ballabilitat en viu.</p>
+            <div class="mt-5 flex flex-wrap gap-2">
+              <span class="feature-tag-rose">Gràfic Radar</span>
+              <span class="feature-tag-rose">Vibra Sonora</span>
+              <span class="feature-tag-rose">València</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -534,6 +551,17 @@ onMounted(() => {
   font-size: 11px;
   font-weight: 600;
   color: #facc15;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.feature-tag-rose {
+  padding: 4px 12px;
+  background: rgba(244,63,94,0.1);
+  border: 1px solid rgba(244,63,94,0.2);
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fb7185;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
