@@ -1,0 +1,92 @@
+// Configuració del generador del client Prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Connexió a la base de dades MySQL
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Model principal dels usuaris de l'aplicació
+model Usuari {
+  id                 Int      @id @default(autoincrement())
+  nom                String
+  cognoms            String?
+  correu             String?  @unique
+  spotify_id         String   @unique
+  foto_perfil        String?
+  data_registre      DateTime @default(now())
+  data_actualitzacio DateTime @updatedAt
+
+  token_acces        String?  @db.Text
+  refresh_token      String?  @db.Text
+
+  // Relacions amb altres mòduls
+  entrades_diari     EntradaDiari[]
+  configuracio_radar ConfiguracioRadar?
+  participacions     ParticipantSala[]
+
+  @@map("usuaris")
+}
+
+// Model per al Diari Emocional (Mòdul 2 - IA)
+model EntradaDiari {
+  id                Int      @id @default(autoincrement())
+  usuari_id         Int
+  text_entrada      String   @db.Text
+  estat_anim        String?  // Resultat de l'anàlisi de sentiments: "positiu", "negatiu", "neutral"
+  canco_suggerida   String?  // URI de la cançó de Spotify que la IA ha suggerit
+  caratula_url      String?
+  data_entrada      DateTime @default(now())
+
+  // Relació: una entrada pertany a un usuari
+  usuari            Usuari   @relation(fields: [usuari_id], references: [id], onDelete: Cascade)
+
+  @@map("entrades_diari")
+}
+
+// Model per a la configuració del Radar Underground (Mòdul 3 - Cron Job)
+model ConfiguracioRadar {
+  id                  Int    @id @default(autoincrement())
+  usuari_id           Int    @unique
+  generes_preferits   String @db.Text  // JSON array de gèneres preferits
+  limit_popularitat   Int    @default(30) // Artistes amb popularitat inferior a aquest valor
+  radar_actiu         Boolean @default(true)
+  autoneteja_activa   Boolean @default(false)
+  dia_setmana         Int     @default(5) // 0=Diumenge, 1=Dilluns... 5=Divendres
+
+  // Relació: cada usuari té màxim una configuració
+  usuari              Usuari @relation(fields: [usuari_id], references: [id], onDelete: Cascade)
+
+  @@map("configuracio_radar")
+}
+
+// Model per a les Sales del Playground Social (Mòdul 4 - WebSockets)
+model SalaJoc {
+  id            Int      @id @default(autoincrement())
+  codi_sala     String   @unique  // Codi de 6 caràcters per unir-se a la sala
+  tipus         String           // "tinder" o "trivial"
+  estat         String   @default("esperant")  // "esperant", "en_joc", "finalitzada"
+  data_creacio  DateTime @default(now())
+
+  // Relació: una sala té múltiples participants
+  participants  ParticipantSala[]
+
+  @@map("sales_joc")
+}
+
+// Model per a la relació entre usuaris i sales
+model ParticipantSala {
+  id         Int     @id @default(autoincrement())
+  usuari_id  Int
+  sala_id    Int
+  puntuacio  Int     @default(0)
+
+  // Relacions
+  usuari     Usuari  @relation(fields: [usuari_id], references: [id], onDelete: Cascade)
+  sala       SalaJoc @relation(fields: [sala_id], references: [id], onDelete: Cascade)
+
+  @@map("participants_sala")
+}
