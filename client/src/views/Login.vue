@@ -30,23 +30,23 @@
 
         <!-- Títol gran -->
         <h1 class="text-5xl md:text-6xl font-black tracking-tighter leading-none">
-          <span class="block text-white">La teva</span>
-          <span class="block gradient-text">música,</span>
-          <span class="block text-white">redescoberta.</span>
+          <span class="block text-white">{{ $t('login.brandSubtitle1') }}</span>
+          <span class="block gradient-text">{{ $t('login.brandSubtitle2') }}</span>
+          <span class="block text-white">{{ $t('login.brandSubtitle3') }}</span>
         </h1>
 
         <!-- Descripció -->
         <p class="text-[#666] text-lg leading-relaxed max-w-md">
-          Connecta el teu Spotify i descobreix estadístiques, IA i experiències musicals que mai has tingut.
+          {{ $t('login.brandDescription') }}
         </p>
 
         <!-- Features mini -->
         <div class="flex flex-col gap-3 pt-2">
-          <div v-for="f in features" :key="f.text" class="flex items-center gap-3">
+          <div v-for="f in featuresList" :key="f" class="flex items-center gap-3">
             <div class="w-6 h-6 rounded-full bg-[#1ED760]/10 border border-[#1ED760]/30 flex items-center justify-center flex-shrink-0">
               <svg class="w-3 h-3 text-[#1ED760]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
             </div>
-            <span class="text-sm text-[#888]">{{ f.text }}</span>
+            <span class="text-sm text-[#888]">{{ f }}</span>
           </div>
         </div>
       </div>
@@ -61,8 +61,8 @@
             <div class="sound-bars mx-auto mb-4">
               <span></span><span></span><span></span><span></span><span></span><span></span>
             </div>
-            <h2 class="text-2xl font-black text-white">Iniciar Sessió</h2>
-            <p class="text-sm text-[#666]">Connecta el teu compte de Spotify per continuar</p>
+            <h2 class="text-2xl font-black text-white">{{ $t('login.loginTitle') }}</h2>
+            <p class="text-sm text-[#666]">{{ $t('login.loginSubtitle') }}</p>
           </div>
 
           <!-- Divider -->
@@ -76,7 +76,7 @@
             <svg class="w-6 h-6 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
             </svg>
-            <span>Accedir amb Spotify</span>
+            <span>{{ $t('login.btnSpotify') }}</span>
             <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
             </svg>
@@ -84,21 +84,29 @@
 
           <!-- Stats previsualització -->
           <div class="grid grid-cols-3 gap-2">
-            <div v-for="s in stats" :key="s.label" class="stat-mini rounded-xl p-3 text-center">
-              <p class="text-lg font-black text-white">{{ s.value }}</p>
-              <p class="text-[10px] text-[#555] uppercase tracking-wider mt-0.5">{{ s.label }}</p>
+            <div class="stat-mini rounded-xl p-3 text-center">
+              <p class="text-lg font-black text-white">6</p>
+              <p class="text-[10px] text-[#555] uppercase tracking-wider mt-0.5">{{ $t('login.statFeatures') }}</p>
+            </div>
+            <div class="stat-mini rounded-xl p-3 text-center">
+              <p class="text-lg font-black text-white">∞</p>
+              <p class="text-[10px] text-[#555] uppercase tracking-wider mt-0.5">{{ $t('login.statSongs') }}</p>
+            </div>
+            <div class="stat-mini rounded-xl p-3 text-center">
+              <p class="text-lg font-black text-white">0€</p>
+              <p class="text-[10px] text-[#555] uppercase tracking-wider mt-0.5">{{ $t('login.statCost') }}</p>
             </div>
           </div>
 
           <!-- Legal -->
           <p class="text-center text-[11px] text-[#444] leading-relaxed">
-            En continuar, acceptes l'accés a les teves dades públiques de Spotify per generar estadístiques. No emmagatzemem contrasenyes.
+            {{ $t('login.privacyNote') }}
           </p>
         </div>
 
         <!-- Back link -->
         <div class="text-center mt-4">
-          <router-link to="/" class="text-xs text-[#444] hover:text-[#888] transition-colors">← Tornar a l'inici</router-link>
+          <router-link to="/" class="text-xs text-[#444] hover:text-[#888] transition-colors">{{ $t('login.backHome') }}</router-link>
         </div>
       </div>
     </div>
@@ -107,24 +115,22 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import LanguageSelector from '../components/LanguageSelector.vue'
+
+const { t } = useI18n()
 
 const iniciarSessioSpotify = () => {
   window.location.href = 'http://localhost:3000/api/auth/login'
 }
 
-const features = [
-  { text: 'Estadístiques avançades del teu Spotify' },
-  { text: 'IA Gemini integrada per recomanacions' },
-  { text: 'Tinder Musical amb amics en temps real' },
-  { text: 'Playlists autònomes per estat d\'ànim' },
-]
-
-const stats = [
-  { value: '6', label: 'Features' },
-  { value: '∞', label: 'Cançons' },
-  { value: '0€', label: 'Cost' },
-]
+const featuresList = computed(() => [
+  t('login.feature1'),
+  t('login.feature2'),
+  t('login.feature3'),
+  t('login.feature4')
+])
 </script>
 
 <style scoped>
