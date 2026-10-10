@@ -22,10 +22,23 @@
 
 <br/>
 
-> **Projecte Final de Cicle Formatiu de Grau Superior — Desenvolupament d'Aplicacions Web (DAW)**  
-> Curs 2025–2026 · Bryan Ruzafa Gonçalves
+> **Projecte individual del Cicle Formatiu de Grau Superior — Desenvolupament d'Aplicacions Web (DAW)**  
+> Gener 2026 · Bryan Ruzafa Gonçalves
 
 </div>
+
+---
+
+> ### 📌 En resumen (ES)
+> **SONARIS** es una aplicación web full-stack que se conecta a la cuenta de Spotify del usuario para ofrecer estadísticas, recomendaciones con IA y funciones sociales en tiempo real. Proyecto **individual**: diseño, backend, frontend y base de datos hechos por mí.
+>
+> - **OAuth 2.0 de Spotify** (intercambio y refresco de tokens) con persistencia en **Prisma + MySQL**.
+> - **3 APIs externas:** Spotify Web API, **Google Gemini** (diario emocional con análisis de sentimiento y chat musical) y Ticketmaster.
+> - **"Tinder musical"** multijugador en tiempo real con **Socket.IO**: dos usuarios votan canciones y el servidor detecta los *matches*.
+> - **Cron job** (node-cron) que cada semana crea automáticamente una playlist de artistas emergentes.
+> - Frontend en **Vue 3 + Pinia + Tailwind**, con gráficas (Chart.js) e i18n CA/ES/EN.
+>
+> 👤 [Bryan Ruzafa](https://bryanrg.dev) · [LinkedIn](https://www.linkedin.com/in/bryan-ruzafa/)
 
 ---
 
@@ -585,14 +598,16 @@ SONARIS/
 
 - 🎓 Cicle Formatiu de Grau Superior — DAW (Desenvolupament d'Aplicacions Web)
 - 🏫 Curs 2025-2026
-- 📧 [bryannrg10@gmail.com](mailto:bryannrg10@gmail.com)
+- 📧 [bryan@bryanrg.dev](mailto:bryan@bryanrg.dev)
+- 🌐 [bryanrg.dev](https://bryanrg.dev)
+- 💼 [linkedin.com/in/bryan-ruzafa](https://www.linkedin.com/in/bryan-ruzafa/)
 - 🐙 [github.com/BryanRuzafa](https://github.com/BryanRuzafa)
 
 ---
 
 <div align="center">
 
-**SONARIS** — Projecte Final DAW 2025/26
+**SONARIS** — Projecte individual DAW 2025/26
 
 *Fet amb ❤️ i molta música*
 
